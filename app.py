@@ -26,25 +26,14 @@ data = {
 @app.route('/fetch_details', methods=['GET'])
 def fetch_details():
     try:
-        # Get the 'page' parameter from the query string (defaults to 1 if not provided)
-        page = int(request.args.get('page', 1))
+        # Extract all deals from the dataset (no pagination)
+        deals = list(data['deals'].values())
         
-        # Set the number of records per page
-        records_per_page = 10
-        
-        # Convert the 'deals' dictionary to a list and calculate the start and end index based on the page
-        deals_list = list(data['deals'].values())
-        start_idx = (page - 1) * records_per_page
-        end_idx = start_idx + records_per_page
-        
-        # Extract the deals for the current page
-        deals = deals_list[start_idx:end_idx]
-        
-        # If no records are found for the page, return an empty list
+        # If no records are found, return an empty list
         if not deals:
             return jsonify({"message": "No records found"}), 404
         
-        # Return the fetched records as a JSON response
+        # Return all records as a JSON response
         return jsonify(deals)
     
     except Exception as e:
