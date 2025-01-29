@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-
+import json
 app = Flask(__name__)
 
 # Sample data (nested JSON)
@@ -23,13 +23,31 @@ data = {
     }
 }
 
+# @app.route('/fetch_details', methods=['GET'])
+# def fetch_details():
+#     try:
+#         deals = list(data['deals'].values())
+#         if not deals:
+#             return jsonify({"message": "No records found"}), 404        
+#         return jsonify(deals)    
+#     except Exception as e:
+#         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+
 @app.route('/fetch_details', methods=['GET'])
 def fetch_details():
     try:
         deals = list(data['deals'].values())
         if not deals:
-            return jsonify({"message": "No records found"}), 404        
-        return jsonify(deals)    
+            return jsonify({"message": "No records found"}), 404
+        
+        # Use json.dumps to return the full JSON
+        response = app.response_class(
+            response=json.dumps(deals, ensure_ascii=False, indent=4),
+            status=200,
+            mimetype='application/json'
+        )
+        return response
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
